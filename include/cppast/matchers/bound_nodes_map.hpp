@@ -23,10 +23,10 @@ class bound_nodes_map
 {
 public:
     /// \effects Binds a matched node to the map using the given id
-    void bind(const std::string& id, type_safe::object_ref<cpp_entity> node);
+    void bind(const std::string& id, const cpp_entity& node);
 
     /// \returns A reference to the node bound to the given id, if any
-    type_safe::optional_ref<const cpp_entity> get(const std::string& id) const noexcept;
+    type_safe::optional_ref<const cpp_entity> get(const std::string& id) const;
 
     /// \returns A reference to the node bound to the given id, if any, casted to
     /// the right entity type
@@ -37,7 +37,7 @@ public:
 
         if(ref.has_value())
         {
-            return { cppast::cpp_entity_cast<Entity>(ref.value()) };
+            return type_safe::opt_cref(&cppast::cpp_entity_cast<Entity>(ref.value()));
         }
         else
         {
@@ -47,10 +47,10 @@ public:
 
     /// \returns The set of references to the nodes bound to the given id.
     /// If no node is bound to that id an empty set is returned.
-    std::vector<type_safe::object_ref<cpp_entity>> get_all(const std::string& id) const noexcept;
+    std::vector<type_safe::object_ref<const cpp_entity>> get_all(const std::string& id) const;
 
 private:
-    std::unordered_map<std::string, std::vector<type_safe::object_ref<cpp_entity>>> _nodes;
+    std::unordered_map<std::string, std::vector<type_safe::object_ref<const cpp_entity>>> _nodes;
 };
 
 } // namespace cppast::matchers

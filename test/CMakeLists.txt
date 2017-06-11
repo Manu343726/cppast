@@ -33,7 +33,8 @@ set(tests
         detail/parser/istream_lexer.cpp
         detail/parser/parser.cpp
         detail/parser/syntax_generator.cpp
-        cpp_entity_cast_test.cpp)
+        cpp_entity_cast_test.cpp
+        matchers/bound_nodes_map.cpp)
 
 add_executable(cppast_test test.cpp test_parser.hpp ${tests})
 target_include_directories(cppast_test PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
