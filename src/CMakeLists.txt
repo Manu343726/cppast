@@ -97,7 +97,8 @@ set(source
         detail/utils/format.cpp
         detail/info_tracking_logger.cpp
         detail/utils/format.cpp
-        matchers/bound_nodes_map.cpp)
+        matchers/bound_nodes_map.cpp
+        matchers/bound_nodes_tree_builder.cpp)
 
 set(libclang_source
         libclang/class_parser.cpp
