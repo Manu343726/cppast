@@ -100,7 +100,8 @@ set(source
         matchers/bound_nodes_map.cpp
         matchers/bound_nodes_tree_builder.cpp
         matchers/matcher_interface.cpp
-        matchers/variadic_matcher.cpp)
+        matchers/variadic_matcher.cpp
+        matchers/ast_match_finder.cpp)
 
 set(libclang_source
         libclang/class_parser.cpp
