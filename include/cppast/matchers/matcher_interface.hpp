@@ -5,7 +5,8 @@
 #ifndef CPPAST_MATCHERS_MATCHER_INTERFACE_INCLUDED
 #define CPPAST_MATCHERS_MATCHER_INTERFACE_INCLUDED
 
-#include <cppast/cpp_entity_cast.hpp>
+#include <cppast/matchers/node.hpp>
+#include <cppast/detail/utils/overloaded_function.hpp>
 #include <cppast/matchers/bound_nodes_tree_builder.hpp>
 #include <memory>
 #include <type_traits>
@@ -21,7 +22,36 @@ class ast_match_finder;
 class basic_matcher_interface
 {
 public:
-    virtual bool matches(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const = 0;
+    virtual bool matches(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const
+    {
+        return node.visit(
+            [this, &finder, &builder](const auto& node)
+            {
+                return matches(node, finder, builder);
+            }
+        );
+    }
+
+private:
+    virtual bool matches(const cppast::cpp_entity&, ast_match_finder&, bound_nodes_tree_builder&) const
+    {
+        return false;
+    }
+
+    virtual bool matches(const cppast::cpp_expression&, ast_match_finder&, bound_nodes_tree_builder&) const
+    {
+        return false;
+    }
+
+    virtual bool matches(const cppast::cpp_type&, ast_match_finder&, bound_nodes_tree_builder&) const
+    {
+        return false;
+    }
+
+    virtual bool matches(const cppast::detail::parser::ast::node&, ast_match_finder&, bound_nodes_tree_builder&) const
+    {
+        return false;
+    }
 };
 
 template<typename Node>
@@ -31,13 +61,13 @@ public:
     virtual bool matches(const Node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const = 0;
 
 private:
-    bool matches(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const override final
+    bool matches(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const override final
     {
-        const auto* node_ = cppast::cpp_entity_cast<Node>(&node);
+        auto node_ref = node_cast<Node>(node);
 
-        if(node_ != nullptr)
+        if(node_ref.has_value())
         {
-            return matcher_interface::matches(*node_, finder, builder);
+            return matcher_interface::matches(node_ref.value(), finder, builder);
         }
         else
         {
@@ -54,7 +84,7 @@ public:
         _impl{new typename std::decay<Matcher>::type{std::forward<Matcher>(impl)}}
     {}
 
-    bool matches(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const override final;
+    bool matches(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const override final;
 
 private:
     std::shared_ptr<basic_matcher_interface> _impl;

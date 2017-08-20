@@ -8,6 +8,7 @@
 #include <cppast/detail/parser/lexer.hpp>
 #include <cppast/detail/utils/overloaded_function.hpp>
 #include <cppast/detail/assert.hpp>
+#include <cppast/node_cast.hpp>
 #include <memory>
 #include <string>
 #include <vector>
@@ -148,6 +149,23 @@ T* node_cast(node* node)
     if(T::node_class_kind == node->kind)
     {
         return static_cast<T*>(node);
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+/// Converts a pointer to an AST node to a pointer of the given AST node type.
+/// \returns A pointer of the requested type pointing to the same node object if
+/// the node has the same kind that the AST node type given represents. Returns
+/// nullptr otherwise.
+template<typename T>
+const T* node_cast(const node* node)
+{
+    if(T::node_class_kind == node->kind)
+    {
+        return static_cast<const T*>(node);
     }
     else
     {
@@ -493,6 +511,32 @@ std::shared_ptr<node> make_literal(const token& token);
 } // namespace cppast::detail::parser::ast
 
 } // namespace cppast::detail::parser
+
+template<typename T>
+struct kind_traits<T, void_t<
+    decltype(std::declval<T>().kind)
+>>
+{
+    using kind_type = decltype(std::declval<T>().kind);
+
+    static kind_type kind(const T& node)
+    {
+        return node.kind;
+    }
+};
+
+template<typename T>
+struct class_kind_traits<T, void_t<
+    decltype(T::node_class_kind)
+>>
+{
+    using kind_type = decltype(T::node_class_kind);
+
+    static constexpr kind_type kind()
+    {
+        return T::node_class_kind;
+    }
+};
 
 } // namespace cppast::detail
 

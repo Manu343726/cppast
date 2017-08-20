@@ -33,7 +33,7 @@ set(tests
         detail/parser/istream_lexer.cpp
         detail/parser/parser.cpp
         detail/parser/syntax_generator.cpp
-        cpp_entity_cast_test.cpp
+        node_cast.cpp
         matchers/bound_nodes_map.cpp)
 
 add_executable(cppast_test test.cpp test_parser.hpp ${tests})

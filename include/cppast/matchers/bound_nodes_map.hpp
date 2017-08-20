@@ -5,8 +5,7 @@
 #ifndef CPPAST_MATCHERS_BOUND_NODES_MAP_HPP_INCLUDED
 #define CPPAST_MATCHERS_BOUND_NODES_MAP_HPP_INCLUDED
 
-#include <cppast/cpp_entity.hpp>
-#include <cppast/cpp_entity_cast.hpp>
+#include <cppast/matchers/node.hpp>
 #include <type_safe/reference.hpp>
 #include <string>
 #include <vector>
@@ -18,39 +17,47 @@ namespace cppast
 namespace matchers
 {
 
+
 /// Set of AST nodes bound to a match
 class bound_nodes_map
 {
 public:
     /// \effects Binds a matched node to the map using the given id
-    void bind(const std::string& id, const cpp_entity& node);
+    void bind(const std::string& id, const node& node);
+
+    /// \effects Binds a matched node to the map using the given id
+    template<typename Node>
+    void bind(const std::string& id, const Node& node)
+    {
+        bind(id, matchers::node{&node});
+    }
 
     /// \returns A reference to the node bound to the given id, if any
-    type_safe::optional_ref<const cpp_entity> get(const std::string& id) const;
+    type_safe::optional_ref<const node> get(const std::string& id) const;
 
     /// \returns A reference to the node bound to the given id, if any, casted to
-    /// the right entity type
-    template<typename Entity>
-    type_safe::optional_ref<const Entity> get_as(const std::string& id) const
+    /// the right Node type
+    template<typename Node>
+    type_safe::optional_ref<const Node> get_as(const std::string& id) const
     {
         auto ref = get(id);
 
         if(ref.has_value())
         {
-            return type_safe::opt_cref(&cppast::cpp_entity_cast<Entity>(ref.value()));
+            return node_cast<Node>(ref.value());
         }
         else
         {
-            return {};
+            return type_safe::nullopt;
         }
     }
 
     /// \returns The set of references to the nodes bound to the given id.
     /// If no node is bound to that id an empty set is returned.
-    std::vector<type_safe::object_ref<const cpp_entity>> get_all(const std::string& id) const;
+    std::vector<node> get_all(const std::string& id) const;
 
 private:
-    std::unordered_map<std::string, std::vector<type_safe::object_ref<const cpp_entity>>> _nodes;
+    std::unordered_map<std::string, std::vector<node>> _nodes;
 };
 
 } // namespace cppast::matchers

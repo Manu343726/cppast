@@ -3,23 +3,30 @@
 // found in the top-level directory of this distribution.
 
 #include <cppast/matchers/bound_nodes_map.hpp>
-#include <debug_assert.hpp>
+#include <cppast/detail/assert.hpp>
 
 using namespace cppast;
 using namespace cppast::matchers;
 using namespace type_safe;
 
-void bound_nodes_map::bind(const std::string& id, const cpp_entity& node)
+void bound_nodes_map::bind(const std::string& id, const node& node)
 {
+    DEBUG_ASSERT(node.has_value(), cppast::detail::assert_handler{});
     _nodes[id].emplace_back(node);
+    DEBUG_ASSERT(_nodes[id].back().has_value(), cppast::detail::assert_handler{});
 }
 
-std::vector<object_ref<const cpp_entity>> bound_nodes_map::get_all(const std::string& id) const
+std::vector<node> bound_nodes_map::get_all(const std::string& id) const
 {
     auto it = _nodes.find(id);
 
     if(it != _nodes.end())
     {
+        for(const auto& node : it->second)
+        {
+            DEBUG_ASSERT(node.has_value(), cppast::detail::assert_handler{});
+        }
+
         return it->second;
     }
     else
@@ -28,16 +35,17 @@ std::vector<object_ref<const cpp_entity>> bound_nodes_map::get_all(const std::st
     }
 }
 
-optional_ref<const cpp_entity> bound_nodes_map::get(const std::string& id) const
+optional_ref<const node> bound_nodes_map::get(const std::string& id) const
 {
     const auto& set = get_all(id);
 
     if(set.empty())
     {
-        return {};
+        return type_safe::nullopt;
     }
     else
     {
-        return set.front();
+        DEBUG_ASSERT(set.front().has_value(), cppast::detail::assert_handler{});
+        return type_safe::opt_ref(type_safe::ref(set.front()));
     }
 }

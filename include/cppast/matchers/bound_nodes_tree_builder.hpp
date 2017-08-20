@@ -32,7 +32,12 @@ public:
         virtual void visitMatch(const bound_nodes_map& bound_nodes) = 0;
     };
 
-    void bind(const std::string& id, const cpp_entity& node);
+    void bind(const std::string& id, const node& node);
+    template<typename Node>
+    void bind(const std::string& id, const Node& node)
+    {
+        bind(id, matchers::node{node});
+    }
     void visit_matches(visitor& visitor);
     void add_match(const bound_nodes_tree_builder& tree);
 

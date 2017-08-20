@@ -8,8 +8,6 @@
 
 #include <cppast/cpp_class.hpp>
 #include <cppast/cpp_type_alias.hpp>
-#include <cppast/cpp_entity_cast.hpp>
-
 #include "../test_parser.hpp"
 
 using namespace cppast;
@@ -50,8 +48,9 @@ class foo{};
 
     map.bind("alias", *alias);
     REQUIRE(map.get("alias").has_value());
-    REQUIRE(map.get("alias").value().name() == "mytypedef");
+    REQUIRE(map.get("alias").value().has_value());
+    REQUIRE(map.get("alias").value().as<cpp_type_alias>().value().name() == "mytypedef");
     REQUIRE(map.get_all("alias").size() == 1);
-    REQUIRE(map.get_all("alias").front()->name() == "mytypedef");
+    REQUIRE(map.get_all("alias").front().as<cpp_type_alias>().value().name() == "mytypedef");
     REQUIRE_NOTHROW(map.get_as<cpp_type_alias>("alias").value().name() == "mytypedef");
 }

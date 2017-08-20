@@ -37,7 +37,7 @@ public:
         }
     {}
 
-    bool matches(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const override final;
+    bool matches(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const override final;
 
 private:
     type_erased_matcher _matcher;

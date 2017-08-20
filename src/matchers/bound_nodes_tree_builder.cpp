@@ -7,7 +7,7 @@
 using namespace cppast;
 using namespace cppast::matchers;
 
-void bound_nodes_tree_builder::bind(const std::string& id, const cpp_entity& node)
+void bound_nodes_tree_builder::bind(const std::string& id, const node& node)
 {
     if(_bindings.empty())
     {

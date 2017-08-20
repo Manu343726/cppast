@@ -7,7 +7,7 @@
 using namespace cppast;
 using namespace cppast::matchers;
 
-bool type_erased_matcher::matches(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const
+bool type_erased_matcher::matches(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const
 {
     return _impl->matches(node, finder, builder);
 }

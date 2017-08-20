@@ -11,20 +11,20 @@ using namespace cppast::matchers;
 namespace variadic_functions
 {
 
-bool all_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers);
-bool any_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers);
-bool each_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers);
-bool none_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers);
+bool all_of(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers);
+bool any_of(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers);
+bool each_of(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers);
+bool none_of(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers);
 
 }
 
-using variadic_matcher_function = bool(*)(const cpp_entity&, ast_match_finder&, bound_nodes_tree_builder&, const std::vector<type_erased_matcher>&);
+using variadic_matcher_function = bool(*)(const node&, ast_match_finder&, bound_nodes_tree_builder&, const std::vector<type_erased_matcher>&);
 
 template<variadic_matcher_function Func>
 class variadic_matcher_impl : public basic_matcher_interface
 {
 public:
-    bool matches(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const override final
+    bool matches(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const override final
     {
         return Func(node, finder, builder, _inner_matchers);
     }
@@ -61,7 +61,7 @@ variadic_matcher::variadic_matcher(variadic_matcher::variadic_operator op, std::
     _matcher{variadic_matcher_impl_for(op, std::move(inner_matchers))}
 {}
 
-bool variadic_matcher::matches(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const
+bool variadic_matcher::matches(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder) const
 {
     return _matcher.matches(node, finder, builder);
 }
@@ -69,7 +69,7 @@ bool variadic_matcher::matches(const cpp_entity& node, ast_match_finder& finder,
 namespace variadic_functions
 {
 
-bool all_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers)
+bool all_of(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers)
 {
     return std::all_of(inner_matchers.begin(), inner_matchers.end(), [&node, &finder, &builder](const type_erased_matcher& matcher)
     {
@@ -77,7 +77,7 @@ bool all_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_b
     });
 }
 
-bool any_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers)
+bool any_of(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers)
 {
     return std::any_of(inner_matchers.begin(), inner_matchers.end(), [&node, &finder, &builder](const type_erased_matcher& matcher)
     {
@@ -85,7 +85,7 @@ bool any_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_b
     });
 }
 
-bool each_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers)
+bool each_of(const node& node, ast_match_finder& finder, bound_nodes_tree_builder& builder, const std::vector<type_erased_matcher>& inner_matchers)
 {
     bool result = false;
 
@@ -98,7 +98,7 @@ bool each_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_
     return result;
 }
 
-bool none_of(const cpp_entity& node, ast_match_finder& finder, bound_nodes_tree_builder&, const std::vector<type_erased_matcher>& inner_matchers)
+bool none_of(const node& node, ast_match_finder& finder, bound_nodes_tree_builder&, const std::vector<type_erased_matcher>& inner_matchers)
 {
     return std::none_of(inner_matchers.begin(), inner_matchers.end(), [&node, &finder](const type_erased_matcher& matcher)
     {

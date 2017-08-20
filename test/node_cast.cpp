@@ -4,13 +4,13 @@
 
 #include <cppast/cpp_class.hpp>
 #include <cppast/cpp_type_alias.hpp>
-#include <cppast/cpp_entity_cast.hpp>
+#include <cppast/node_cast.hpp>
 
 #include "test_parser.hpp"
 
 using namespace cppast;
 
-TEST_CASE("cpp_entity_cast")
+TEST_CASE("node_cast")
 {
     auto code = R"(
 
@@ -38,15 +38,15 @@ class foo{};
     REQUIRE(alias != nullptr);
     REQUIRE(class_decl != nullptr);
 
-    REQUIRE(cpp_entity_cast<cpp_type_alias>(alias) == static_cast<const cpp_type_alias*>(alias));
-    REQUIRE(cpp_entity_cast<cpp_class>(class_decl) == static_cast<const cpp_class*>(class_decl));
-    REQUIRE(cpp_entity_cast<cpp_class>(alias) == nullptr);
-    REQUIRE(cpp_entity_cast<cpp_type_alias>(class_decl) == nullptr);
+    REQUIRE(node_cast<cpp_type_alias>(alias) == static_cast<const cpp_type_alias*>(alias));
+    REQUIRE(node_cast<cpp_class>(class_decl) == static_cast<const cpp_class*>(class_decl));
+    REQUIRE(node_cast<cpp_class>(alias) == nullptr);
+    REQUIRE(node_cast<cpp_type_alias>(class_decl) == nullptr);
 
-    REQUIRE(&cpp_entity_cast<cpp_type_alias>(*alias) == static_cast<const cpp_type_alias*>(alias));
-    REQUIRE(&cpp_entity_cast<cpp_class>(*class_decl) == static_cast<const cpp_class*>(class_decl));
-    REQUIRE_THROWS_AS(cpp_entity_cast<cpp_class>(*alias), bad_cpp_entity_cast);
-    REQUIRE_THROWS_AS(cpp_entity_cast<cpp_type_alias>(*class_decl), bad_cpp_entity_cast);
+    REQUIRE(&node_cast<cpp_type_alias>(*alias) == static_cast<const cpp_type_alias*>(alias));
+    REQUIRE(&node_cast<cpp_class>(*class_decl) == static_cast<const cpp_class*>(class_decl));
+    REQUIRE_THROWS_AS(node_cast<cpp_class>(*alias), bad_node_cast);
+    REQUIRE_THROWS_AS(node_cast<cpp_type_alias>(*class_decl), bad_node_cast);
 
     REQUIRE(count == 2u);
 }
