@@ -14,7 +14,7 @@ namespace detail
 namespace utils
 {
 
-namespace
+namespace detail
 {
     template<typename...>
     struct typelist
@@ -48,7 +48,7 @@ namespace
 }
 
 template<typename... Functions>
-constexpr overloaded_function_t<typelist<Functions...>> overloaded_function(Functions... functions)
+constexpr detail::overloaded_function_t<detail::typelist<Functions...>> overloaded_function(Functions... functions)
 {
     return { functions... };
 }

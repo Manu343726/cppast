@@ -27,7 +27,7 @@ public:
         return node.visit(
             [this, &finder, &builder](const auto& node)
             {
-                return matches(node, finder, builder);
+                return this->matches(node, finder, builder);
             }
         );
     }

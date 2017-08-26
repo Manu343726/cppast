@@ -3,6 +3,7 @@
 // found in the top-level directory of this distribution.
 
 #include <cppast/matchers/variadic_matcher.hpp>
+#include <cppast/detail/assert.hpp>
 #include <numeric>
 
 using namespace cppast;
@@ -55,6 +56,9 @@ type_erased_matcher variadic_matcher_impl_for(variadic_matcher::variadic_operato
     case variadic_matcher::variadic_operator::none_of:
         return variadic_matcher_impl<variadic_functions::none_of>::make(std::move(inner_matchers));
     }
+
+    DEBUG_UNREACHABLE(cppast::detail::assert_handler{});
+    throw;
 }
 
 variadic_matcher::variadic_matcher(variadic_matcher::variadic_operator op, std::vector<type_erased_matcher> inner_matchers) :
