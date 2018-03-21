@@ -155,6 +155,12 @@ namespace cppast
             remove_comments_in_macro_ = b;
         }
 
+        /// \effects Adds an arbitrary compilation flag
+        void add_flag(std::string flag)
+        {
+            compile_config::add_flag(std::move(flag));
+        }
+
     private:
         void do_set_flags(cpp_standard standard, compile_flags flags) override;
 
