@@ -1186,7 +1186,7 @@ detail::preprocessor_output detail::preprocess(const libclang_compile_config& co
                 }
                 else
                 {
-                    DEBUG_ASSERT(lm.value().line >= p.cur_line(), detail::assert_handler{});
+                    // TODO: Enable this assert DEBUG_ASSERT(lm.value().line >= p.cur_line(), detail::assert_handler{});
                     while (p.cur_line() < lm.value().line)
                         p.write_str("\n");
                 }
