@@ -306,6 +306,9 @@ int main(int argc, char* argv[]) try
         if (options.count("verbose"))
             logger.set_verbose(true);
 
+        // TODO: Remove this, POC of https://github.com/foonathan/cppast/issues/33
+        config.add_flag("-v");
+
         auto file = parse_file(config, logger, options["file"].as<std::string>(),
                                options.count("fatal_errors") == 1);
         if (!file)
