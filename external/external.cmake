@@ -2,6 +2,12 @@
 # This file is subject to the license terms in the LICENSE file
 # found in the top-level directory of this distribution.
 
+if(EXISTS ${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    set(CPPAST_USING_CONAN TRUE)
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup()
+endif()
+
 #
 # install type safe
 #
