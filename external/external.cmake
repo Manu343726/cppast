@@ -100,6 +100,11 @@ endfunction()
 # sets: LLVM_CONFIG_BINARY
 function(_cppast_find_llvm_config)
     unset(LLVM_CONFIG_BINARY CACHE)
+
+    foreach(path ${CMAKE_MODULE_PATH})
+        message(STATUS "CMAKE_MODULE_PATH: ${path}")
+    endforeach()
+
     if (LLVM_DOWNLOAD_DIR)
         find_program(LLVM_CONFIG_BINARY "llvm-config" "${LLVM_DOWNLOAD_DIR}/bin" NO_DEFAULT_PATH)
     else()
