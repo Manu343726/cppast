@@ -49,6 +49,7 @@ endif()
 add_subdirectory(src)
 
 if(${build_test})
+    enable_testing()
     add_subdirectory(test)
 endif()
 if(${build_example})
