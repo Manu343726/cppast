@@ -2,6 +2,8 @@
 # This file is subject to the license terms in the LICENSE file
 # found in the top-level directory of this distribution.
 
+include(find_stdlib_includes)
+
 set(detail_header
         ../include/cppast/detail/assert.hpp
         ../include/cppast/detail/intrusive_list.hpp)
@@ -109,6 +111,8 @@ target_compile_definitions(cppast PUBLIC
                                 CPPAST_VERSION_MINOR="${cppast_VERSION_MINOR}"
                                 CPPAST_VERSION_MAJOR="${cppast_VERSION_MAJOR}"
                                 CPPAST_VERSION_STRING="${cppast_VERSION}")
+add_clang_stdlib_includes(cppast)
+
 if(CPPAST_ENABLE_ASSERTIONS)
     target_compile_definitions(cppast PUBLIC CPPAST_ENABLE_ASSERTIONS)
 endif()

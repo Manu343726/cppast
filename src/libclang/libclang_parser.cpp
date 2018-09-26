@@ -107,6 +107,11 @@ libclang_compile_config::libclang_compile_config()
     // set system include dir
     add_include_dir(CPPAST_LIBCLANG_SYSTEM_INCLUDE_DIR);
 
+    for(const auto& include_dir : CPPAST_CLANG_STDLIB_INCLUDES)
+    {
+        add_include_dir(include_dir);
+    }
+
     // set macros to detect cppast
     define_macro("__cppast__", "libclang");
     define_macro("__cppast_version_major__", CPPAST_VERSION_MAJOR);
