@@ -2,13 +2,19 @@
 # Original function here https://gitlab.com/Manu343726/tinyrefl/cmake/utils.cmake
 # This one was modified to use the LLVM distro clang binary directly
 function(clangxx_stdlib_includes stdlib INCLUDES)
-    if(NOT CLANG_BINARY)
-        message(FATAL_ERROR "Clang binary not available")
+    if(MSVC)
+        if(NOT CLANG_BINARY)
+            message(FATAL_ERROR "Clang binary not available")
+        endif()
+
+        set(compiler "${CLANG_BINARY}")
+    else()
+        set(compiler "${CMAKE_CXX_COMPILER}")
     endif()
 
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E echo ""
-        COMMAND ${CLANG_BINARY} -std=c++11 -v -x c++ -E -
+        COMMAND ${compiler} -std=c++11 -v -x c++ -E -
         OUTPUT_VARIABLE out
         ERROR_VARIABLE err
     )
