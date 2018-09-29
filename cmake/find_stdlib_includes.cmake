@@ -97,5 +97,8 @@ function(add_clang_stdlib_includes TARGET)
     endforeach()
 
     string(REGEX REPLACE ";" "," string_literals "${string_literals}")
-    target_compile_definitions(${TARGET} PRIVATE ${variable}={${string_literals}})
+    set(macros_file "${CMAKE_CURRENT_BINARY_DIR}/${TARGET}_stdlib_includes.macros")
+
+    file(WRITE "${macros_file}" "#define ${variable} {${string_literals}}")
+    target_compile_options(${TARGET} PRIVATE -imacros ${macros_file})
 endfunction()
