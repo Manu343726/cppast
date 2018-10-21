@@ -5,6 +5,12 @@
 cmake_minimum_required(VERSION 3.3)
 project(cppast VERSION 0.0)
 
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+    set(CPPAST_IS_ROOT_PROJECT TRUE)
+else()
+    set(CPPAST_IS_ROOT_PROJECT FALSE)
+endif()
+
 # options
 if(CMAKE_BUILD_TYPE MATCHES Debug)
     set(default_assertions ON)
@@ -14,25 +20,25 @@ endif()
 option(CPPAST_ENABLE_ASSERTIONS "whether or not to enable internal assertions for the cppast library" ${default_assertions})
 option(CPPAST_ENABLE_PRECONDITION_CHECKS "whether or not to enable precondition checks" ON)
 
-option(CPPAST_BUILD_TEST "whether or not to build the tests" OFF)
-option(CPPAST_BUILD_EXAMPLE "whether or not to build the examples" OFF)
-option(CPPAST_BUILD_TOOL "whether or not to build the tool" OFF)
-option(BUILD_TESTING "build test" OFF) # The ctest variable for building tests
+option(CPPAST_BUILD_TEST "whether or not to build the tests" ${CPPAST_IS_ROOT_PROJECT})
+option(CPPAST_BUILD_EXAMPLE "whether or not to build the examples" ${CPPAST_IS_ROOT_PROJECT})
+option(CPPAST_BUILD_TOOL "whether or not to build the tool" ${CPPAST_IS_ROOT_PROJECT})
+option(BUILD_TESTING "build test" ${CPPAST_IS_ROOT_PROJECT}) # The ctest variable for building tests
 
-if(${CPPAST_BUILD_TEST} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+if(${CPPAST_BUILD_TEST})
     set(build_test ON)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # for the self integration test
 else()
     set(build_test OFF)
 endif()
 
-if(${CPPAST_BUILD_EXAMPLE} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+if(${CPPAST_BUILD_EXAMPLE})
     set(build_example ON)
 else()
     set(build_example OFF)
 endif()
 
-if(${CPPAST_BUILD_TOOL} OR (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+if(${CPPAST_BUILD_TOOL})
     set(build_tool ON)
 else()
     set(build_tool OFF)
@@ -55,6 +61,6 @@ endif()
 if(${build_example})
     add_subdirectory(example)
 endif()
-if(${build_tool} AND NOT CPPAST_USING_CONAN)
+if(${build_tool})
     add_subdirectory(tool)
 endif()
