@@ -17,6 +17,11 @@ if(NOT type_safe_FOUND)
     execute_process(COMMAND git submodule update --init -- external/type_safe
                     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/external/type_safe EXCLUDE_FROM_ALL)
+else()
+    if(CPPAST_USING_CONAN AND NOT TARGET type_safe AND TARGET type_safe::type_safe)
+        add_library(type_safe INTERFACE)
+        target_link_libraries(type_safe INTERFACE type_safe::type_safe)
+    endif()
 endif()
 
 #
